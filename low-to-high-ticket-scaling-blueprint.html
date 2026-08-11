@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Low → High Ticket Scaling Blueprint · Claude Marketing Club</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap');
+
+:root, [data-theme="light"] {
+  --bg: #F4EFFF; --bg2: #ECE3FF; --card: #FFFFFF; --card2: #FAF7FF;
+  --ink: #2E2154; --ink-soft: #6B5C93;
+  --violet: #8B5CF6; --violet-deep: #6D3FE0; --orchid: #B49CF8;
+  --lilac: #E5D8FF; --pink: #F0B8DF; --gold: #C9962E; --gold-soft: #F3E3BC;
+  --line: #E3D8F8; --shadow: 0 10px 30px rgba(109,63,224,0.10);
+  --holo: linear-gradient(120deg,#C9B2FF 0%,#F5C6E8 30%,#BFE3FF 60%,#D9C6FF 100%);
+  --holo-strong: linear-gradient(120deg,#8B5CF6 0%,#C86DD7 50%,#7AA5F8 100%);
+  --on-strong: #fff;
+}
+[data-theme="dark"] {
+  --bg: #1B1235; --bg2: #221745; --card: #281C4E; --card2: #2F2259;
+  --ink: #F1EAFF; --ink-soft: #B7A8DE;
+  --violet: #A78BFA; --violet-deep: #C4B0FF; --orchid: #8B6FE0;
+  --lilac: #3A2B6B; --pink: #D98BC4; --gold: #E4C06E; --gold-soft: #4A3A1E;
+  --line: #3D2F70; --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  --holo: linear-gradient(120deg,#4A3585 0%,#6B3E77 30%,#35508A 60%,#4A3585 100%);
+  --holo-strong: linear-gradient(120deg,#A78BFA 0%,#E08BD4 50%,#8BB0FA 100%);
+  --on-strong: #1B1235;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100vh; background: var(--bg);
+  background-image: radial-gradient(circle at 15% 10%, var(--bg2) 0%, transparent 45%),
+                    radial-gradient(circle at 85% 90%, var(--bg2) 0%, transparent 45%);
+  color: var(--ink); font-family: 'DM Sans', sans-serif; padding-bottom: 80px;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+h1,h2,h3,h4 { font-family:'Quicksand',sans-serif; margin:0; }
+button { font-family: inherit; color: inherit; }
+
+.hero { position:relative; overflow:hidden; padding:44px 24px 30px; text-align:center; }
+.hero-ribbon { position:absolute; inset:-40% -20%; background:var(--holo); opacity:0.5; filter:blur(60px); animation:drift 14s ease-in-out infinite alternate; pointer-events:none; }
+@keyframes drift { from { transform:rotate(-3deg) translateY(-10px);} to { transform:rotate(3deg) translateY(14px);} }
+@media (prefers-reduced-motion: reduce) {
+  .hero-ribbon, .flywheel-ring { animation:none !important; }
+  * { transition-duration:0.01ms !important; }
+}
+.hero-badge { display:inline-flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--line); border-radius:999px; padding:7px 16px; font-size:13px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--violet-deep); position:relative; box-shadow:var(--shadow); }
+.hero h1 { position:relative; font-size:clamp(30px,5.4vw,54px); font-weight:700; line-height:1.08; margin:20px auto 12px; max-width:820px; letter-spacing:-0.01em; }
+.holo-text { background:var(--holo-strong); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; }
+.hero p { position:relative; margin:0 auto; max-width:620px; color:var(--ink-soft); font-size:17px; line-height:1.55; }
+.theme-toggle { position:absolute; top:18px; right:18px; z-index:5; background:var(--card); border:1px solid var(--line); border-radius:999px; width:42px; height:42px; display:grid; place-items:center; cursor:pointer; box-shadow:var(--shadow); }
+.theme-toggle svg { width:18px; height:18px; }
+[data-theme="light"] .icon-sun { display:none; }
+[data-theme="dark"] .icon-moon { display:none; }
+
+.tabs { position:sticky; top:0; z-index:40; display:flex; gap:8px; overflow-x:auto; padding:14px 20px; background:color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter:blur(12px); scrollbar-width:none; }
+.tabs::-webkit-scrollbar { display:none; }
+.tab-btn { flex:0 0 auto; display:inline-flex; align-items:center; gap:7px; border:1px solid var(--line); background:var(--card); color:var(--ink-soft); font-family:'Quicksand',sans-serif; font-weight:700; font-size:14px; padding:10px 16px; border-radius:999px; cursor:pointer; transition:all 0.25s ease; white-space:nowrap; }
+.tab-btn:hover { transform:translateY(-1px); color:var(--violet-deep); }
+.tab-btn:focus-visible { outline:3px solid var(--orchid); outline-offset:2px; }
+.tab-btn.active { background:var(--holo-strong); color:var(--on-strong); border-color:transparent; box-shadow:0 6px 18px rgba(139,92,246,0.35); }
+
+.panel { display:none; }
+.panel.active { display:block; }
+.wrap { max-width:980px; margin:0 auto; padding:30px 20px 0; }
+.section-title { font-size:26px; font-weight:700; margin-bottom:6px; }
+.section-sub { color:var(--ink-soft); font-size:15.5px; line-height:1.55; margin:0 0 26px; max-width:640px; }
+
+.card { background:var(--card); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow); padding:22px; transition:transform 0.25s ease; }
+.card.hoverable:hover { transform:translateY(-3px); }
+
+.principle-banner { background:var(--holo); border-radius:20px; padding:3px; margin:26px 0; }
+.principle-inner { background:var(--card); border-radius:17px; padding:20px 24px; text-align:center; }
+.principle-inner .big { font-family:'Quicksand',sans-serif; font-weight:700; font-size:clamp(17px,2.6vw,21px); line-height:1.4; }
+.principle-inner .not { color:var(--ink-soft); font-size:14px; margin-top:8px; }
+.principle-inner .not s { opacity:0.75; }
+
+.eco-stack { display:flex; flex-direction:column; align-items:center; }
+.eco-node { width:100%; max-width:560px; border:1px solid var(--line); background:var(--card); border-radius:18px; padding:16px 20px; cursor:pointer; box-shadow:var(--shadow); transition:all 0.25s ease; text-align:left; }
+.eco-node:hover { transform:translateY(-2px); border-color:var(--orchid); }
+.eco-node:focus-visible { outline:3px solid var(--orchid); outline-offset:2px; }
+.eco-node.open { border-color:var(--violet); }
+.eco-head { display:flex; align-items:center; gap:14px; }
+.eco-icon { width:44px; height:44px; border-radius:14px; flex:0 0 auto; display:grid; place-items:center; color:#fff; font-size:20px; }
+.eco-title { font-family:'Quicksand',sans-serif; font-weight:700; font-size:17px; }
+.eco-price { font-size:13px; color:var(--ink-soft); font-weight:500; }
+.eco-chevron { margin-left:auto; transition:transform 0.3s; color:var(--ink-soft); flex:0 0 auto; }
+.eco-node.open .eco-chevron { transform:rotate(180deg); }
+.eco-body { overflow:hidden; max-height:0; opacity:0; transition:max-height 0.35s ease, opacity 0.3s ease; }
+.eco-node.open .eco-body { max-height:420px; opacity:1; }
+.eco-detail { padding-top:14px; display:grid; gap:8px; font-size:14.5px; line-height:1.5; }
+.eco-detail .row { display:flex; gap:8px; }
+.eco-detail .k { font-weight:700; color:var(--violet-deep); min-width:118px; flex:0 0 auto; font-family:'Quicksand',sans-serif; font-size:13px; text-transform:uppercase; letter-spacing:0.05em; padding-top:2px; }
+.connector { display:grid; place-items:center; padding:6px 0; color:var(--orchid); }
+
+.ladder-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; }
+.ladder-card { display:flex; flex-direction:column; gap:12px; position:relative; overflow:hidden; }
+.ladder-card .stripe { position:absolute; top:0; left:0; right:0; height:6px; }
+.ladder-tag { align-self:flex-start; font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:5px 12px; border-radius:999px; background:var(--lilac); color:var(--violet-deep); }
+.ladder-price { font-family:'Quicksand',sans-serif; font-weight:700; font-size:26px; }
+.ladder-price small { font-size:14px; color:var(--ink-soft); font-weight:500; }
+.check-list { display:grid; gap:7px; font-size:14.5px; padding:0; margin:0; }
+.check-list li { display:flex; gap:9px; align-items:flex-start; list-style:none; }
+.check-list .ck { color:var(--violet); flex:0 0 auto; margin-top:2px; }
+.mini-expand { border:none; background:var(--card2); border-radius:12px; padding:10px 14px; font-family:'Quicksand',sans-serif; font-weight:700; font-size:13.5px; color:var(--violet-deep); cursor:pointer; display:flex; align-items:center; justify-content:space-between; width:100%; gap:8px; }
+.mini-expand .eco-chevron { margin-left:0; }
+.mini-expand.open .eco-chevron { transform:rotate(180deg); }
+.mini-body { font-size:14px; line-height:1.55; color:var(--ink-soft); padding:10px 4px 0; display:none; }
+.mini-body.open { display:block; }
+
+.slider-row { display:grid; gap:6px; margin-bottom:16px; }
+.slider-row label { font-size:13.5px; font-weight:700; font-family:'Quicksand',sans-serif; display:flex; justify-content:space-between; }
+.slider-row label .val { color:var(--violet-deep); }
+input[type="range"] { width:100%; appearance:none; -webkit-appearance:none; height:8px; border-radius:99px; background:var(--lilac); outline:none; cursor:pointer; }
+input[type="range"]::-webkit-slider-thumb { appearance:none; -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:linear-gradient(120deg,#8B5CF6,#C86DD7); border:3px solid var(--card); box-shadow:0 3px 10px rgba(139,92,246,0.4); }
+input[type="range"]::-moz-range-thumb { width:18px; height:18px; border-radius:50%; background:#8B5CF6; border:3px solid var(--card); box-shadow:0 3px 10px rgba(139,92,246,0.4); }
+input[type="range"]:focus-visible { outline:3px solid var(--orchid); outline-offset:2px; }
+
+.stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+.stat { background:var(--card2); border:1px solid var(--line); border-radius:16px; padding:14px 16px; }
+.stat .lbl { font-size:12px; text-transform:uppercase; letter-spacing:0.07em; color:var(--ink-soft); font-weight:700; }
+.stat .num { font-family:'Quicksand',sans-serif; font-weight:700; font-size:22px; margin-top:4px; }
+.stat.hero-stat { background:var(--holo); border:none; }
+.stat.hero-stat .lbl, .stat.hero-stat .num { color:#3A2470; }
+
+.journey { display:flex; flex-direction:column; align-items:center; }
+.j-node { width:100%; max-width:480px; border:1px solid var(--line); background:var(--card); border-radius:999px; padding:13px 22px; cursor:pointer; text-align:center; font-family:'Quicksand',sans-serif; font-weight:700; font-size:15px; transition:all 0.25s ease; box-shadow:var(--shadow); }
+.j-node:hover { border-color:var(--orchid); transform:scale(1.02); }
+.j-node:focus-visible { outline:3px solid var(--orchid); outline-offset:2px; }
+.j-node.sel { background:var(--holo-strong); color:var(--on-strong); border-color:transparent; }
+.j-detail { margin-top:20px; width:100%; background:var(--card2); border:1px dashed var(--orchid); border-radius:18px; padding:18px 22px; font-size:14.5px; line-height:1.6; }
+.j-detail b { font-family:'Quicksand',sans-serif; }
+
+.week-list { display:grid; gap:12px; }
+.week-item { display:flex; gap:14px; align-items:flex-start; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:15px 18px; cursor:pointer; transition:all 0.2s ease; text-align:left; width:100%; }
+.week-item:hover { border-color:var(--orchid); }
+.week-item:focus-visible { outline:3px solid var(--orchid); outline-offset:2px; }
+.week-item.done { opacity:0.65; }
+.week-item.done .wk-title { text-decoration:line-through; }
+.wk-check { width:26px; height:26px; border-radius:9px; border:2px solid var(--orchid); display:grid; place-items:center; flex:0 0 auto; margin-top:2px; color:#fff; transition:all 0.2s ease; font-size:14px; }
+.wk-check svg { display:none; }
+.week-item.done .wk-check { background:var(--violet); border-color:var(--violet); }
+.week-item.done .wk-check svg { display:block; }
+.wk-day { font-size:11.5px; font-weight:700; letter-spacing:0.09em; text-transform:uppercase; color:var(--violet-deep); }
+.wk-title { font-family:'Quicksand',sans-serif; font-weight:700; font-size:15.5px; }
+.wk-note { font-size:13.5px; color:var(--ink-soft); margin-top:3px; line-height:1.5; }
+.progress-head { display:flex; justify-content:space-between; font-size:13.5px; font-weight:700; font-family:'Quicksand',sans-serif; }
+.progress-head span:last-child { color:var(--violet-deep); }
+.progress-track { height:10px; border-radius:99px; background:var(--lilac); overflow:hidden; margin:6px 0 22px; }
+.progress-fill { height:100%; background:var(--holo-strong); border-radius:99px; transition:width 0.5s ease; width:0%; }
+
+.accordion { display:grid; gap:12px; }
+.acc-item { border:1px solid var(--line); border-radius:18px; background:var(--card); overflow:hidden; }
+.acc-head { width:100%; display:flex; justify-content:space-between; align-items:center; gap:12px; padding:17px 20px; background:none; border:none; cursor:pointer; font-family:'Quicksand',sans-serif; font-weight:700; font-size:16px; text-align:left; }
+.acc-head:focus-visible { outline:3px solid var(--orchid); outline-offset:-3px; }
+.acc-head .eco-chevron { margin-left:0; }
+.acc-item.open .acc-head .eco-chevron { transform:rotate(180deg); }
+.acc-body { padding:0 20px 18px; font-size:14.5px; line-height:1.65; color:var(--ink-soft); display:none; }
+.acc-item.open .acc-body { display:block; }
+.acc-body b { color:var(--ink); }
+
+.flywheel-wrap { position:relative; width:min(340px,86vw); height:min(340px,86vw); margin:24px auto; }
+.flywheel-ring { position:absolute; inset:26px; border-radius:50%; border:2.5px dashed var(--orchid); animation:spin 26s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg);} }
+.fly-node { position:absolute; transform:translate(-50%,-50%); background:var(--card); border:1px solid var(--line); border-radius:999px; padding:7px 13px; font-family:'Quicksand',sans-serif; font-weight:700; font-size:12px; box-shadow:var(--shadow); white-space:nowrap; }
+.fly-center { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:92px; height:92px; border-radius:50%; background:var(--holo-strong); display:grid; place-items:center; color:var(--on-strong); text-align:center; font-family:'Quicksand',sans-serif; font-weight:700; font-size:12.5px; line-height:1.25; box-shadow:0 8px 24px rgba(139,92,246,0.4); }
+
+.myth-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin-top:14px; }
+.myth-card { border-radius:16px; padding:16px 18px; font-size:14.5px; line-height:1.55; }
+.myth-card.m { background:color-mix(in srgb, var(--pink) 22%, var(--card)); border:1px solid color-mix(in srgb, var(--pink) 50%, var(--line)); }
+.myth-card.t { background:color-mix(in srgb, var(--violet) 12%, var(--card)); border:1px solid color-mix(in srgb, var(--violet) 35%, var(--line)); }
+.myth-tag { font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; display:block; margin-bottom:6px; }
+
+.flip-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+.flip-card { perspective:900px; cursor:pointer; height:150px; border:none; background:none; padding:0; }
+.flip-card:focus-visible .flip-inner { outline:3px solid var(--orchid); outline-offset:2px; border-radius:16px; }
+.flip-inner { position:relative; width:100%; height:100%; transition:transform 0.55s; transform-style:preserve-3d; }
+.flip-card.flipped .flip-inner { transform:rotateY(180deg); }
+.flip-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:16px; display:flex; flex-direction:column; justify-content:center; gap:8px; padding:16px 18px; font-size:14px; line-height:1.45; text-align:left; }
+.flip-face.front { background:var(--card); border:1px solid var(--line); box-shadow:var(--shadow); }
+.flip-face.back { background:var(--holo); transform:rotateY(180deg); color:#3A2470; font-weight:500; }
+.flip-label { font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
+
+.dt-card { text-align:center; padding:26px; }
+.dt-q { font-family:'Quicksand',sans-serif; font-weight:700; font-size:19px; margin-bottom:18px; }
+.dt-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.dt-step { display:none; }
+.dt-step.on { display:block; }
+.dt-copy { font-size:14.5px; color:var(--ink-soft); max-width:460px; margin:0 auto 18px; line-height:1.6; }
+.btn { border:none; border-radius:999px; padding:12px 26px; cursor:pointer; font-family:'Quicksand',sans-serif; font-weight:700; font-size:15px; transition:transform 0.2s ease; }
+.btn:hover { transform:translateY(-2px); }
+.btn:focus-visible { outline:3px solid var(--orchid); outline-offset:2px; }
+.btn.primary { background:var(--holo-strong); color:var(--on-strong); box-shadow:0 6px 18px rgba(139,92,246,0.35); }
+.btn.ghost { background:var(--card2); color:var(--violet-deep); border:1px solid var(--line); }
+
+.field-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+.field { display:grid; gap:6px; }
+.field label { font-size:13px; font-weight:700; font-family:'Quicksand',sans-serif; }
+.field input, .field select { border:1px solid var(--line); background:var(--card2); color:var(--ink); border-radius:12px; padding:11px 14px; font-size:15px; font-family:'DM Sans',sans-serif; }
+.field input:focus, .field select:focus { outline:3px solid var(--orchid); outline-offset:1px; }
+
+.roadmap { display:none; flex-direction:column; align-items:center; margin-top:26px; }
+.roadmap.on { display:flex; }
+.rm-node { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:13px 24px; box-shadow:var(--shadow); text-align:center; min-width:240px; }
+.rm-node .t { font-family:'Quicksand',sans-serif; font-weight:700; font-size:15px; }
+.rm-node .s { font-size:13px; color:var(--ink-soft); margin-top:2px; }
+.rm-node.crown { background:var(--holo); border:none; }
+.rm-node.crown .t, .rm-node.crown .s { color:#3A2470; }
+
+.pos-scale { display:flex; border-radius:12px; overflow:hidden; margin-top:10px; border:1px solid var(--line); }
+.pos-seg { flex:1; text-align:center; padding:9px 4px; font-size:12.5px; font-weight:700; font-family:'Quicksand',sans-serif; color:var(--ink-soft); background:var(--card2); transition:all 0.25s ease; }
+.pos-seg.on { background:var(--holo-strong); color:var(--on-strong); }
+
+.bar-race { display:grid; gap:10px; margin-top:14px; }
+.bar-row { display:grid; gap:5px; }
+.bar-row .bl { font-size:13px; font-weight:700; font-family:'Quicksand',sans-serif; display:flex; justify-content:space-between; }
+.bar-track { height:16px; border-radius:99px; background:var(--lilac); overflow:hidden; }
+.bar-fill { height:100%; border-radius:99px; transition:width 0.7s cubic-bezier(0.2,0.8,0.2,1); }
+
+.footnote { font-size:13px; color:var(--ink-soft); margin-top:14px; line-height:1.55; }
+.two-col { display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
+
+@media print {
+  .tabs, .theme-toggle, .hero-ribbon, .no-print { display:none !important; }
+  body { background:#fff !important; color:#222 !important; padding:0; }
+  .panel { display:none !important; }
+  #panel-build { display:block !important; }
+  .roadmap { display:flex !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-ribbon"></div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+  </button>
+  <span class="hero-badge">✦ Claude Marketing Club</span>
+  <h1>The Low → High Ticket <span class="holo-text">Scaling Blueprint</span></h1>
+  <p>The ethical membership ecosystem for predictable recurring revenue and premium client growth. Not a funnel. A world your members never need to leave.</p>
+</header>
+
+<nav class="tabs" aria-label="Blueprint sections">
+  <button class="tab-btn active" data-tab="overview">🗺️ Overview</button>
+  <button class="tab-btn" data-tab="ladder">💎 Offer Ladder</button>
+  <button class="tab-btn" data-tab="journey">🧭 Member Journey</button>
+  <button class="tab-btn" data-tab="revenue">🧮 Revenue Math</button>
+  <button class="tab-btn" data-tab="weekly">📅 Weekly OS</button>
+  <button class="tab-btn" data-tab="philosophy">💜 High Ticket Philosophy</button>
+  <button class="tab-btn" data-tab="build">✨ Build Yours</button>
+</nav>
+
+<!-- ============ TAB 1: OVERVIEW ============ -->
+<section class="panel active" id="panel-overview">
+  <div class="wrap">
+    <h2 class="section-title">The Big Picture</h2>
+    <p class="section-sub">This is not a funnel. It is an ecosystem where every offer is complete and valuable on its own, with a natural pathway for the members who want more support. Click each stage to see why it exists.</p>
+    <div class="eco-stack" id="ecoStack"></div>
+
+    <div class="principle-banner">
+      <div class="principle-inner">
+        <div class="big">✦ Every tier should be valuable enough that someone could stay there forever.</div>
+        <div class="not">Not: <s>"get everyone into high ticket."</s></div>
+      </div>
+    </div>
+
+    <h3 style="font-size:20px; margin:34px 0 6px;">Common Mistakes (tap to flip)</h3>
+    <p class="section-sub">The four traps that quietly break low-to-high ecosystems, and their fixes.</p>
+    <div class="flip-grid" id="flipGrid"></div>
+  </div>
+</section>
+
+<!-- ============ TAB 2: OFFER LADDER ============ -->
+<section class="panel" id="panel-ladder">
+  <div class="wrap">
+    <h2 class="section-title">The Offer Ladder</h2>
+    <p class="section-sub">Four offers, each one complete on its own. The ladder exists for the members who want to climb it, never as a trapdoor under the ones who don't.</p>
+    <div class="ladder-grid">
+
+      <div class="card hoverable ladder-card">
+        <div class="stripe" style="background:linear-gradient(90deg,#B49CF8,#D9A6E8);"></div>
+        <span class="ladder-tag">Starter Tier</span>
+        <div class="ladder-price">Under $10 <small>/month</small></div>
+        <div style="font-size:14.5px;color:var(--ink-soft);"><b style="color:var(--ink);">Purpose:</b> An easy first yes with fast wins.</div>
+        <ul class="check-list">
+          <li><span class="ck">✔</span>Start Here course</li>
+          <li><span class="ck">✔</span>Welcome walkthrough</li>
+          <li><span class="ck">✔</span>Community orientation</li>
+          <li><span class="ck">✔</span>5-question quiz</li>
+          <li><span class="ck">✔</span>Personalized learning path</li>
+          <li><span class="ck">✔</span>2 to 3 flagship courses</li>
+        </ul>
+        <div style="font-size:13.5px;color:var(--ink-soft);"><b style="color:var(--violet-deep);">Examples:</b> Infinite Visibility Challenge, Launch Challenge, AI Resource Library</div>
+      </div>
+
+      <div class="card hoverable ladder-card">
+        <div class="stripe" style="background:linear-gradient(90deg,#8B5CF6,#C86DD7);"></div>
+        <span class="ladder-tag">Premium Tier</span>
+        <div class="ladder-price">$27–33 <small>/month</small></div>
+        <div style="font-size:14.5px;color:var(--ink-soft);"><b style="color:var(--ink);">Purpose:</b> Higher implementation support and retention.</div>
+        <ul class="check-list">
+          <li><span class="ck">✔</span>Premium resources</li>
+          <li><span class="ck">✔</span>Advanced templates</li>
+          <li><span class="ck">✔</span>Live coaching</li>
+          <li><span class="ck">✔</span>Exclusive trainings</li>
+          <li><span class="ck">✔</span>More implementation</li>
+        </ul>
+        <div style="font-size:13.5px;color:var(--ink-soft);"><b style="color:var(--violet-deep);">Examples:</b> Create Your Own Infinite Challenge, Sign Your Next High Ticket Client, Advanced AI Artifacts</div>
+      </div>
+
+      <div class="card hoverable ladder-card">
+        <div class="stripe" style="background:linear-gradient(90deg,#C86DD7,#F0A6C8);"></div>
+        <span class="ladder-tag">Strategy Audit</span>
+        <div class="ladder-price">$99 <small>/ 60 min</small></div>
+        <div style="font-size:14.5px;color:var(--ink-soft);"><b style="color:var(--ink);">Purpose:</b> Personal implementation support and clarity.</div>
+        <ul class="check-list">
+          <li><span class="ck">✔</span>Completed action plan</li>
+          <li><span class="ck">✔</span>Personalized strategy</li>
+          <li><span class="ck">✔</span>Clear roadmap</li>
+        </ul>
+        <button class="mini-expand" data-expand>
+          What happens at the end of the session
+          <span class="eco-chevron">▾</span>
+        </button>
+        <div class="mini-body">You ask one honest question: "Do you feel confident implementing this on your own, or would more support help?" No pressure. No pitching everyone. Only strong-fit clients get an invitation, and everyone else walks away with a complete plan they paid $99 for and would happily pay again.</div>
+      </div>
+
+      <div class="card hoverable ladder-card">
+        <div class="stripe" style="background:linear-gradient(90deg,#C9962E,#E8C97A);"></div>
+        <span class="ladder-tag">High Ticket</span>
+        <div class="ladder-price">$1k–15k</div>
+        <div style="font-size:14.5px;color:var(--ink-soft);"><b style="color:var(--ink);">Purpose:</b> Deep, customized implementation.</div>
+        <ul class="check-list">
+          <li><span class="ck">✔</span>More guidance</li>
+          <li><span class="ck">✔</span>More accountability</li>
+          <li><span class="ck">✔</span>More customization</li>
+          <li><span class="ck">✔</span>More speed</li>
+        </ul>
+        <button class="mini-expand" data-expand>
+          The one rule of high ticket
+          <span class="eco-chevron">▾</span>
+        </button>
+        <div class="mini-body">High ticket should never exist because you need money. It exists because certain people genuinely want more guidance, more accountability, more customization, and more speed. When that is true, a premium invitation is a gift, not a squeeze.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:26px;">
+      <h3 style="font-size:18px;margin-bottom:4px;">Interactive Pricing Guide</h3>
+      <p style="font-size:14px;color:var(--ink-soft);margin:0 0 16px;">Drag the slider to see where a price point positions an offer in your market.</p>
+      <div class="slider-row">
+        <label>Offer price<span class="val" id="posVal">$99</span></label>
+        <input type="range" id="posSlider" min="5" max="15000" step="5" value="99" aria-label="Offer price">
+      </div>
+      <div class="pos-scale" id="posScale">
+        <div class="pos-seg">Budget</div><div class="pos-seg on">Mid</div><div class="pos-seg">Premium</div><div class="pos-seg">Luxury</div>
+      </div>
+      <p class="footnote" id="posNote">The clarity zone. Ideal for audits and diagnostics that deliver a complete result in one sitting.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 3: MEMBER JOURNEY ============ -->
+<section class="panel" id="panel-journey">
+  <div class="wrap">
+    <h2 class="section-title">The Member Journey</h2>
+    <p class="section-sub">Every step a Puffin takes from first click to (optional) private coaching. Click any node to see what happens there and why.</p>
+    <div class="journey" id="journeyStack"></div>
+  </div>
+</section>
+
+<!-- ============ TAB 4: REVENUE MATH ============ -->
+<section class="panel" id="panel-revenue">
+  <div class="wrap">
+    <h2 class="section-title">Revenue Math</h2>
+    <p class="section-sub">Move the sliders to model your own ecosystem. Watch what recurring revenue, audits, and a single coaching client each contribute.</p>
+    <div class="two-col">
+      <div class="card">
+        <h3 style="font-size:17px;margin-bottom:16px;">Your inputs</h3>
+        <div id="revSliders"></div>
+      </div>
+      <div style="display:grid;gap:14px;align-content:start;">
+        <div class="stat-grid">
+          <div class="stat"><div class="lbl">Monthly Recurring</div><div class="num" id="oMrr">$0</div></div>
+          <div class="stat"><div class="lbl">Audit Revenue</div><div class="num" id="oAudit">$0</div></div>
+          <div class="stat"><div class="lbl">High Ticket Revenue</div><div class="num" id="oHt">$0</div></div>
+          <div class="stat"><div class="lbl">Ad Spend</div><div class="num" id="oAds">−$0</div></div>
+          <div class="stat hero-stat"><div class="lbl">Total Revenue</div><div class="num" id="oTotal">$0</div></div>
+          <div class="stat hero-stat"><div class="lbl">Monthly Profit</div><div class="num" id="oProfit">$0</div></div>
+          <div class="stat"><div class="lbl">Member LTV Estimate</div><div class="num" id="oLtv">$0</div></div>
+          <div class="stat"><div class="lbl">Cash to Reinvest</div><div class="num" id="oReinvest">$0</div></div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:16.5px;margin-bottom:4px;">What happens if you close ONE high-ticket client?</h3>
+          <p style="font-size:13.5px;color:var(--ink-soft);margin:0 0 6px;">One <b id="oHtPrice">$3,000</b> client funds roughly <b style="color:var(--gold);" id="oMonths">2.0 months</b> of your entire ad budget, which keeps growing the membership that made the client possible.</p>
+          <div class="bar-race">
+            <div class="bar-row"><div class="bl"><span>Monthly recurring revenue</span><span id="bMrrV">$0</span></div><div class="bar-track"><div class="bar-fill" id="bMrr" style="background:var(--holo-strong);"></div></div></div>
+            <div class="bar-row"><div class="bl"><span>One coaching client</span><span id="bHtV">$0</span></div><div class="bar-track"><div class="bar-fill" id="bHt" style="background:linear-gradient(90deg,#C9962E,#E8C97A);"></div></div></div>
+            <div class="bar-row"><div class="bl"><span>Monthly ad spend</span><span id="bAdsV">$0</span></div><div class="bar-track"><div class="bar-fill" id="bAds" style="background:var(--orchid);"></div></div></div>
+          </div>
+          <p class="footnote">This is the flywheel in numbers: recurring revenue creates stability, one deep client creates fuel, and fuel gets reinvested into growth.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 5: WEEKLY OS ============ -->
+<section class="panel" id="panel-weekly">
+  <div class="wrap">
+    <h2 class="section-title">Your Weekly Operating System</h2>
+    <p class="section-sub">The entire sales system fits in one calm week: one training, one post, one sentence about audit spots, and honest conversations. Tick items off as you go.</p>
+    <div class="progress-head"><span>This week's rhythm</span><span id="weekCount">0 / 7 done</span></div>
+    <div class="progress-track"><div class="progress-fill" id="weekFill"></div></div>
+    <div class="week-list" id="weekList"></div>
+    <p class="footnote no-print">Checkmarks reset when you close this page, so use it as a fresh ritual every Monday.</p>
+  </div>
+</section>
+
+<!-- ============ TAB 6: HIGH TICKET PHILOSOPHY ============ -->
+<section class="panel" id="panel-philosophy">
+  <div class="wrap">
+    <h2 class="section-title">The High Ticket Philosophy</h2>
+    <p class="section-sub">The mindset that makes this whole ecosystem ethical, sustainable, and genuinely enjoyable to run.</p>
+
+    <div class="flywheel-wrap" id="flywheel" role="img" aria-label="Community flywheel: ads, membership, trust, results, testimonials, better ads, more members, coaching, reinvest">
+      <div class="flywheel-ring"></div>
+      <div class="fly-center">The<br>Flywheel</div>
+    </div>
+
+    <div class="accordion">
+      <div class="acc-item open">
+        <button class="acc-head">Why this works <span class="eco-chevron">▾</span></button>
+        <div class="acc-body">Recurring revenue creates <b>stability</b>. High ticket creates <b>depth</b>. Depth improves the community, community improves your content, better content improves your ads, and ads grow recurring revenue. Round and round the flywheel goes, and every turn makes the next one easier.</div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-head">Why this isn't a funnel <span class="eco-chevron">▾</span></button>
+        <div class="acc-body">Every offer is complete. Members never <b>need</b> to upgrade. They only upgrade if they genuinely want deeper support. A funnel pushes people forward; an ecosystem lets them settle wherever they thrive.</div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-head">Why low ticket needs ads <span class="eco-chevron">▾</span></button>
+        <div class="acc-body">Your organic content is better spent building authority than selling an $8/month product. Paid acquisition builds recurring revenue faster. Ads aren't mandatory for every business, but they become increasingly valuable when the goal is a large low-ticket membership, because the economics of an $8 offer often don't justify extensive manual selling.</div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-head">Why Strategy Audits work <span class="eco-chevron">▾</span></button>
+        <div class="acc-body">They provide immediate value, build trust, and create clarity. And they naturally reveal, without any selling, whether additional support would genuinely help. The audit is the world's gentlest qualification process because the client wins either way.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:22px;">
+      <h3 style="font-size:18px;">Never sell everyone</h3>
+      <div class="myth-grid">
+        <div class="myth-card m"><span class="myth-tag" style="color:#C05A9E;">✗ Myth</span>Everyone should buy coaching. More upgrades always means a healthier business.</div>
+        <div class="myth-card t"><span class="myth-tag" style="color:var(--violet-deep);">✓ Truth</span>Only people who <b>want it</b>, <b>need it</b>, <b>can implement it</b>, and <b>can afford it</b> should be invited. Everyone else should feel completely at home right where they are.</div>
+      </div>
+    </div>
+
+    <div class="card dt-card" style="margin-top:22px;">
+      <h3 style="font-size:18px;margin-bottom:4px;">Should I offer high ticket yet?</h3>
+      <p style="font-size:13.5px;color:var(--ink-soft);margin:0 0 20px;">A 20-second gut check before you build a premium offer.</p>
+      <div class="dt-step on" data-step="0">
+        <div class="dt-q">Have you achieved this result yourself?</div>
+        <div class="dt-btns"><button class="btn primary" data-go="1">Yes</button><button class="btn ghost" data-go="3">Not yet</button></div>
+      </div>
+      <div class="dt-step" data-step="1">
+        <div class="dt-q">Can you help someone get there individually?</div>
+        <div class="dt-btns"><button class="btn primary" data-go="2">Yes</button><button class="btn ghost" data-go="3">Not confidently</button></div>
+      </div>
+      <div class="dt-step" data-step="2">
+        <div class="dt-q">✦ Start at $1,000.</div>
+        <p class="dt-copy">You have the result and the ability to guide someone to it. Open a small number of spots, invite only strong fits from your audits, and raise the price as your proof stacks up.</p>
+        <button class="btn ghost" data-go="0">↻ Start over</button>
+      </div>
+      <div class="dt-step" data-step="3">
+        <div class="dt-q">Gain experience first.</div>
+        <p class="dt-copy">That is not a no, it is a not-yet. Keep serving your membership, deliver Strategy Audits, and collect wins. High ticket built on real proof sells itself later.</p>
+        <button class="btn ghost" data-go="0">↻ Start over</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 7: BUILD YOURS ============ -->
+<section class="panel" id="panel-build">
+  <div class="wrap">
+    <h2 class="section-title">Build Your Own Ecosystem</h2>
+    <p class="section-sub">Fill in your numbers and offers, then generate your visual roadmap. Use the print button to save it as a one-page PDF plan.</p>
+    <div class="card no-print">
+      <div class="field-grid">
+        <div class="field"><label for="fStarter">Starter tier price ($/mo)</label><input id="fStarter" type="number" min="1" value="8"></div>
+        <div class="field"><label for="fPremium">Premium tier price ($/mo)</label><input id="fPremium" type="number" min="1" value="33"></div>
+        <div class="field"><label for="fAudit">Strategy Audit price ($)</label><input id="fAudit" type="number" min="1" value="99"></div>
+        <div class="field"><label for="fHt">High ticket price ($)</label><input id="fHt" type="number" min="100" value="3000"></div>
+        <div class="field"><label for="fCourses">Courses included (starter)</label><input id="fCourses" type="text" placeholder="e.g. Visibility Challenge, AI Library"></div>
+        <div class="field"><label for="fBonuses">Premium bonuses</label><input id="fBonuses" type="text" placeholder="e.g. Live coaching, advanced templates"></div>
+        <div class="field"><label for="fCoaching">Weekly live coaching?</label>
+          <select id="fCoaching"><option value="yes">Yes, in Premium</option><option value="no">Not yet</option></select>
+        </div>
+        <div class="field"><label for="fAdBudget">Monthly ad budget ($)</label><input id="fAdBudget" type="number" min="0" value="1000"></div>
+        <div class="field"><label for="fMembers">Target monthly members</label><input id="fMembers" type="number" min="0" value="300"></div>
+        <div class="field"><label for="fMrr">Desired monthly recurring revenue ($)</label><input id="fMrr" type="number" min="0" value="3000"></div>
+        <div class="field"><label for="fClients">Target coaching clients / month</label><input id="fClients" type="number" min="0" value="1"></div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
+        <button class="btn primary" id="buildBtn">✦ Generate my roadmap</button>
+        <button class="btn ghost" id="printBtn" style="display:none;">🖨 Print / save as PDF</button>
+      </div>
+    </div>
+
+    <div class="roadmap" id="roadmap">
+      <h3 style="font-size:20px;margin-bottom:4px;">✦ Your Ecosystem Roadmap</h3>
+      <p style="font-size:13.5px;color:var(--ink-soft);margin:0 0 20px;text-align:center;" id="rmTargets"></p>
+      <div class="rm-node"><div class="t">Ads</div><div class="s" id="rmAds"></div></div>
+      <div class="connector">↓</div>
+      <div class="rm-node"><div class="t" id="rmStarterT"></div><div class="s" id="rmStarterS"></div></div>
+      <div class="connector">↓</div>
+      <div class="rm-node"><div class="t" id="rmPremiumT"></div><div class="s" id="rmPremiumS"></div></div>
+      <div class="connector">↓</div>
+      <div class="rm-node"><div class="t" id="rmAuditT"></div><div class="s">60 minutes, complete action plan, clarity before commitment</div></div>
+      <div class="connector">↓</div>
+      <div class="rm-node crown"><div class="t" id="rmHtT"></div><div class="s">Invited only when it is a genuine fit</div></div>
+      <p class="footnote" style="text-align:center;max-width:520px;">Every tier stands on its own. The community is an ecosystem, not a funnel. High ticket is optional, not the objective.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ================= helpers ================= */
+const $ = (s, el) => (el || document).querySelector(s);
+const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+const money = (n) => "$" + Math.round(n).toLocaleString("en-US");
+
+/* ================= theme ================= */
+$("#themeToggle").addEventListener("click", () => {
+  const root = document.documentElement;
+  root.dataset.theme = root.dataset.theme === "light" ? "dark" : "light";
+});
+
+/* ================= tabs ================= */
+$$(".tab-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    $$(".tab-btn").forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    $$(".panel").forEach((p) => p.classList.remove("active"));
+    $("#panel-" + btn.dataset.tab).classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
+
+/* ================= tab 1: ecosystem stack ================= */
+const ECOSYSTEM = [
+  { title: "Ads", price: "Fuel for the ecosystem", grad: "linear-gradient(135deg,#7AA5F8,#B49CF8)", emoji: "🧭",
+    purpose: "Bring a steady stream of dreamy-fit Puffins to your front door.",
+    pricing: "Set by your monthly ad budget, not a product price.",
+    goal: "Predictable member growth without living on the content hamster wheel.",
+    metric: "Cost per trial start, and cost per paying member.",
+    why: "The economics of an $8 offer rarely justify manual selling. Paid acquisition builds recurring revenue faster while your organic content builds authority instead." },
+  { title: "Low Ticket Membership", price: "$8/month", grad: "linear-gradient(135deg,#B49CF8,#D9A6E8)", emoji: "✨",
+    purpose: "An easy first yes with instant wins.",
+    pricing: "Under $10/month keeps the decision friction-free.",
+    goal: "Fast wins in week one so members feel the value immediately.",
+    metric: "Trial-to-paid conversion and 90-day retention.",
+    why: "A thriving base tier funds everything else and proves your world is worth staying in, forever if they like." },
+  { title: "Premium Membership", price: "$33/month", grad: "linear-gradient(135deg,#8B5CF6,#C86DD7)", emoji: "💎",
+    purpose: "Deeper implementation support for members who want more.",
+    pricing: "$27 to $33/month positions it as a serious upgrade that is still an easy yes.",
+    goal: "Increase retention through live support and advanced resources.",
+    metric: "Upgrade rate and premium retention length.",
+    why: "Some Puffins want to go faster. Premium gives them the room without forcing anyone up the ladder." },
+  { title: "$99 Strategy Audit", price: "$99, 60 minutes", grad: "linear-gradient(135deg,#C86DD7,#F0A6C8)", emoji: "🗺️",
+    purpose: "One focused hour of personal strategy and implementation support.",
+    pricing: "$99 makes it accessible and self-qualifying at the same time.",
+    goal: "The client leaves with a completed action plan, a personalized strategy, and a clear roadmap.",
+    metric: "Audits delivered per month and client clarity afterwards.",
+    why: "It creates clarity before commitment. It also naturally reveals, with zero pressure, whether deeper support would genuinely help." },
+  { title: "Private Coaching", price: "$1,000 to $15,000", grad: "linear-gradient(135deg,#C9962E,#E8C97A)", emoji: "👑",
+    purpose: "Deep, customized implementation for a small number of perfect-fit clients.",
+    pricing: "$1k to $15k depending on depth, duration, and proximity.",
+    goal: "Transformational results that feed testimonials, case studies, and better content back into the whole community.",
+    metric: "Client results, not client count.",
+    why: "High ticket should never exist because you need money. It exists because certain people genuinely want more guidance, accountability, customization, and speed." }
+];
+
+const ecoStack = $("#ecoStack");
+ECOSYSTEM.forEach((n, i) => {
+  if (i > 0) {
+    const c = document.createElement("div");
+    c.className = "connector"; c.setAttribute("aria-hidden", "true"); c.textContent = "↓";
+    ecoStack.appendChild(c);
+  }
+  const btn = document.createElement("button");
+  btn.className = "eco-node" + (i === 1 ? " open" : "");
+  btn.setAttribute("aria-expanded", i === 1 ? "true" : "false");
+  btn.innerHTML = `
+    <div class="eco-head">
+      <div class="eco-icon" style="background:${n.grad}">${n.emoji}</div>
+      <div style="flex:1;">
+        <div class="eco-title">${n.title}</div>
+        <div class="eco-price">${n.price}</div>
+      </div>
+      <span class="eco-chevron">▾</span>
+    </div>
+    <div class="eco-body">
+      <div class="eco-detail">
+        <div class="row"><span class="k">Purpose</span><span>${n.purpose}</span></div>
+        <div class="row"><span class="k">Pricing</span><span>${n.pricing}</span></div>
+        <div class="row"><span class="k">Goal</span><span>${n.goal}</span></div>
+        <div class="row"><span class="k">Success metric</span><span>${n.metric}</span></div>
+        <div class="row"><span class="k">Why it exists</span><span>${n.why}</span></div>
+      </div>
+    </div>`;
+  btn.addEventListener("click", () => {
+    const wasOpen = btn.classList.contains("open");
+    $$(".eco-node", ecoStack).forEach((b) => { b.classList.remove("open"); b.setAttribute("aria-expanded", "false"); });
+    if (!wasOpen) { btn.classList.add("open"); btn.setAttribute("aria-expanded", "true"); }
+  });
+  ecoStack.appendChild(btn);
+});
+
+/* ================= tab 1: flip cards ================= */
+const MISTAKES = [
+  { m: "Building low ticket with no onboarding", f: "Create a Start Here system: welcome walkthrough, quiz, and a personalized learning path." },
+  { m: "Pitching everyone", f: "Invite only good-fit clients. Everyone else already received full value at their tier." },
+  { m: "Relying entirely on high ticket", f: "Build recurring revenue first. Stability comes from the membership, depth comes from coaching." },
+  { m: "Thinking low ticket should lose money forever", f: "Use backend revenue to fund sustainable acquisition and let the ecosystem pay for its own growth." }
+];
+const flipGrid = $("#flipGrid");
+MISTAKES.forEach((x) => {
+  const b = document.createElement("button");
+  b.className = "flip-card"; b.setAttribute("aria-pressed", "false");
+  b.innerHTML = `
+    <div class="flip-inner">
+      <div class="flip-face front"><span class="flip-label" style="color:var(--pink);">✗ Mistake</span>${x.m}</div>
+      <div class="flip-face back"><span class="flip-label">✓ Instead</span>${x.f}</div>
+    </div>`;
+  b.addEventListener("click", () => {
+    b.classList.toggle("flipped");
+    b.setAttribute("aria-pressed", b.classList.contains("flipped") ? "true" : "false");
+  });
+  flipGrid.appendChild(b);
+});
+
+/* ================= tab 2: mini expands + pricing guide ================= */
+$$("[data-expand]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    btn.classList.toggle("open");
+    btn.nextElementSibling.classList.toggle("open");
+  });
+});
+
+const POS_NOTES = [
+  "Friction-free entry. Perfect for the membership front door where the goal is an easy first yes.",
+  "The clarity zone. Ideal for audits and diagnostics that deliver a complete result in one sitting.",
+  "Premium implementation territory. Buyers here expect proximity, accountability, and a real container.",
+  "Luxury transformation. Reserve this for deep, customized work with proven results behind it."
+];
+$("#posSlider").addEventListener("input", (e) => {
+  const p = Number(e.target.value);
+  $("#posVal").textContent = money(p);
+  const pos = p < 50 ? 0 : p < 300 ? 1 : p < 2000 ? 2 : 3;
+  $$("#posScale .pos-seg").forEach((seg, i) => seg.classList.toggle("on", i === pos));
+  $("#posNote").textContent = POS_NOTES[pos];
+});
+
+/* ================= tab 3: member journey ================= */
+const JOURNEY = [
+  { t: "Ads", d: "A dreamy-fit spiritual entrepreneur sees your ad and clicks through to the community about page. The ad sells the trial, the about page sells the world." },
+  { t: "7-Day Free Trial", d: "Zero-risk entry. The whole first week is engineered for one thing: a fast, real win before the first payment ever hits." },
+  { t: "Choose Membership Tier", d: "Standard at $8 or Premium at $33. Both are complete on their own. Nobody is choosing a teaser." },
+  { t: "Complete Start Here", d: "A short welcome walkthrough and community orientation. New Puffins know exactly where to go and what to do first." },
+  { t: "Take the Quiz", d: "A 5-question quiz that captures where they are, what they sell, and what they need most right now." },
+  { t: "Get a Personalized Learning Path", d: "The quiz routes them straight to the right flagship course. Personal from day one, automated behind the scenes." },
+  { t: "Complete Courses", d: "Flagship courses like the Infinite Visibility Challenge, the Launch Challenge, and the AI Resource Library create momentum and results." },
+  { t: "Weekly Push Posts", d: "Every week you publish valuable training plus a push post. Members stay activated and aware of what is available next." },
+  { t: "Book a Strategy Audit (optional)", d: "Members who want personal eyes on their business book a $99 Strategy Audit. Completely optional, always valuable on its own." },
+  { t: "Determine Fit", d: "At the end of the audit: do they feel confident implementing alone, or would more support genuinely help? A conversation, not a pitch." },
+  { t: "Private Coaching (if appropriate)", d: "Only strong-fit clients who want it, need it, can implement it, and can afford it get the invitation. Everyone else got full value already." }
+];
+const journeyStack = $("#journeyStack");
+const jDetail = document.createElement("div");
+jDetail.className = "j-detail"; jDetail.setAttribute("aria-live", "polite");
+JOURNEY.forEach((n, i) => {
+  if (i > 0) {
+    const c = document.createElement("div");
+    c.className = "connector"; c.setAttribute("aria-hidden", "true"); c.textContent = "↓";
+    journeyStack.appendChild(c);
+  }
+  const b = document.createElement("button");
+  b.className = "j-node" + (i === 0 ? " sel" : "");
+  b.textContent = n.t;
+  b.addEventListener("click", () => {
+    $$(".j-node", journeyStack).forEach((x) => x.classList.remove("sel"));
+    b.classList.add("sel");
+    jDetail.innerHTML = `<b>${n.t}:</b> ${n.d}`;
+  });
+  journeyStack.appendChild(b);
+});
+jDetail.innerHTML = `<b>${JOURNEY[0].t}:</b> ${JOURNEY[0].d}`;
+journeyStack.appendChild(jDetail);
+
+/* ================= tab 4: revenue math ================= */
+const REV_INPUTS = [
+  { id: "starterN", label: "Starter members", min: 0, max: 2000, step: 10, val: 300, fmt: (v) => v },
+  { id: "starterP", label: "Starter price", min: 5, max: 20, step: 1, val: 8, fmt: (v) => "$" + v + "/mo" },
+  { id: "premiumN", label: "Premium members", min: 0, max: 500, step: 5, val: 60, fmt: (v) => v },
+  { id: "premiumP", label: "Premium price", min: 20, max: 99, step: 1, val: 33, fmt: (v) => "$" + v + "/mo" },
+  { id: "adSpend", label: "Monthly ad spend", min: 0, max: 10000, step: 100, val: 1500, fmt: money },
+  { id: "audits", label: "Strategy Audits booked / month", min: 0, max: 20, step: 1, val: 6, fmt: (v) => v },
+  { id: "auditConv", label: "Audit → coaching conversion", min: 0, max: 100, step: 5, val: 25, fmt: (v) => v + "%" },
+  { id: "htPrice", label: "High ticket price", min: 1000, max: 15000, step: 250, val: 3000, fmt: money },
+  { id: "retention", label: "Average retention", min: 1, max: 24, step: 1, val: 7, fmt: (v) => v + " months" }
+];
+const rev = {};
+const revSliders = $("#revSliders");
+REV_INPUTS.forEach((cfg) => {
+  rev[cfg.id] = cfg.val;
+  const row = document.createElement("div");
+  row.className = "slider-row";
+  row.innerHTML = `<label>${cfg.label}<span class="val" id="v-${cfg.id}">${cfg.fmt(cfg.val)}</span></label>
+    <input type="range" id="s-${cfg.id}" min="${cfg.min}" max="${cfg.max}" step="${cfg.step}" value="${cfg.val}" aria-label="${cfg.label}">`;
+  revSliders.appendChild(row);
+  $("#s-" + cfg.id).addEventListener("input", (e) => {
+    rev[cfg.id] = Number(e.target.value);
+    $("#v-" + cfg.id).textContent = cfg.fmt(rev[cfg.id]);
+    calcRevenue();
+  });
+});
+
+function calcRevenue() {
+  const mrr = rev.starterN * rev.starterP + rev.premiumN * rev.premiumP;
+  const auditRev = rev.audits * 99;
+  const htClients = (rev.audits * rev.auditConv) / 100;
+  const htRev = htClients * rev.htPrice;
+  const total = mrr + auditRev + htRev;
+  const profit = total - rev.adSpend;
+  const members = rev.starterN + rev.premiumN;
+  const avgPrice = members > 0 ? mrr / members : 0;
+  const ltv = avgPrice * rev.retention;
+  const monthsFunded = rev.adSpend > 0 ? rev.htPrice / rev.adSpend : 0;
+
+  $("#oMrr").textContent = money(mrr);
+  $("#oAudit").textContent = money(auditRev);
+  $("#oHt").textContent = money(htRev);
+  $("#oAds").textContent = "−" + money(rev.adSpend);
+  $("#oTotal").textContent = money(total);
+  $("#oProfit").textContent = money(profit);
+  $("#oLtv").textContent = money(ltv);
+  $("#oReinvest").textContent = money(Math.max(0, profit));
+  $("#oHtPrice").textContent = money(rev.htPrice);
+  $("#oMonths").textContent = monthsFunded.toFixed(1) + " months";
+
+  const maxBar = Math.max(mrr, rev.htPrice, rev.adSpend, 1);
+  $("#bMrr").style.width = (mrr / maxBar) * 100 + "%";
+  $("#bHt").style.width = (rev.htPrice / maxBar) * 100 + "%";
+  $("#bAds").style.width = (rev.adSpend / maxBar) * 100 + "%";
+  $("#bMrrV").textContent = money(mrr);
+  $("#bHtV").textContent = money(rev.htPrice);
+  $("#bAdsV").textContent = money(rev.adSpend);
+}
+calcRevenue();
+
+/* ================= tab 5: weekly OS ================= */
+const WEEK = [
+  { day: "Monday", t: "Create one valuable training", n: "One genuinely useful training for the community. Teach the thing, no gatekeeping." },
+  { day: "Wednesday", t: "Publish your Push Post", n: "Share the training and spotlight one clear next step for members." },
+  { day: "Wednesday", t: "Mention your audit spots", n: "One calm sentence: 'I have two Strategy Audit spots this week.' That is the whole promotion." },
+  { day: "Thu / Fri", t: "Interested members book", n: "Self-selected, already warm, already inside your world. No chasing." },
+  { day: "This week", t: "Deliver the audit", n: "60 minutes, completed action plan, personalized strategy, clear roadmap. They win either way." },
+  { day: "End of audit", t: "Offer support if appropriate", n: "Ask: 'Do you feel confident implementing this on your own, or would more support help?' Then honor the answer." },
+  { day: "Sunday", t: "Rest, then repeat", n: "The whole system runs on one training, one post, one sentence, and honest conversations." }
+];
+const weekList = $("#weekList");
+let weekDone = 0;
+WEEK.forEach((w) => {
+  const b = document.createElement("button");
+  b.className = "week-item"; b.setAttribute("aria-pressed", "false");
+  b.innerHTML = `
+    <span class="wk-check"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+    <span>
+      <span class="wk-day">${w.day}</span>
+      <div class="wk-title">${w.t}</div>
+      <div class="wk-note">${w.n}</div>
+    </span>`;
+  b.addEventListener("click", () => {
+    b.classList.toggle("done");
+    b.setAttribute("aria-pressed", b.classList.contains("done") ? "true" : "false");
+    weekDone = $$(".week-item.done", weekList).length;
+    $("#weekCount").textContent = weekDone + " / " + WEEK.length + " done";
+    $("#weekFill").style.width = (weekDone / WEEK.length) * 100 + "%";
+  });
+  weekList.appendChild(b);
+});
+
+/* ================= tab 6: flywheel + accordion + decision tree ================= */
+const FLY = ["Ads", "Membership", "Trust", "Results", "Testimonials", "Better Ads", "More Members", "Coaching", "Reinvest"];
+const fw = $("#flywheel");
+FLY.forEach((f, i) => {
+  const angle = (i / FLY.length) * Math.PI * 2 - Math.PI / 2;
+  const x = 50 + 46 * Math.cos(angle);
+  const y = 50 + 46 * Math.sin(angle);
+  const node = document.createElement("div");
+  node.className = "fly-node";
+  node.style.left = x + "%"; node.style.top = y + "%";
+  node.textContent = f;
+  fw.appendChild(node);
+});
+
+$$(".acc-head").forEach((head) => {
+  head.addEventListener("click", () => {
+    const item = head.parentElement;
+    const wasOpen = item.classList.contains("open");
+    $$(".acc-item").forEach((x) => x.classList.remove("open"));
+    if (!wasOpen) item.classList.add("open");
+  });
+});
+
+$$("[data-go]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const go = btn.dataset.go;
+    $$(".dt-step").forEach((s) => s.classList.toggle("on", s.dataset.step === go));
+  });
+});
+
+/* ================= tab 7: build yours ================= */
+$("#buildBtn").addEventListener("click", () => {
+  const g = (id) => $("#" + id).value;
+  const num = (id) => Number(g(id)) || 0;
+  const clients = num("fClients");
+  $("#rmTargets").textContent = "Target: " + num("fMembers") + " members · " + money(num("fMrr")) + "/mo recurring · " + clients + " coaching client" + (clients === 1 ? "" : "s") + "/mo";
+  $("#rmAds").textContent = money(num("fAdBudget")) + "/month fuels the front door";
+  $("#rmStarterT").textContent = "Starter Membership · " + money(num("fStarter")) + "/mo";
+  $("#rmStarterS").textContent = g("fCourses") || "Start Here + flagship courses";
+  $("#rmPremiumT").textContent = "Premium Membership · " + money(num("fPremium")) + "/mo";
+  $("#rmPremiumS").textContent = (g("fBonuses") || "Advanced resources") + (g("fCoaching") === "yes" ? " + weekly live coaching" : "");
+  $("#rmAuditT").textContent = "Strategy Audit · " + money(num("fAudit"));
+  $("#rmHtT").textContent = "Private Coaching · " + money(num("fHt"));
+  $("#roadmap").classList.add("on");
+  $("#printBtn").style.display = "inline-block";
+});
+$("#printBtn").addEventListener("click", () => window.print());
+</script>
+</body>
+</html>
